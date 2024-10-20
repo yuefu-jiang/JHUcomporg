@@ -11,7 +11,12 @@
 
 	# miles = kilo*161/100
 	# r0 = r0*161/100
-	#MOV r0, #3
+	# the reason for multiplying 161 then dividing by 100 is that
+	# 1. for integer operations like these, we apparently cannot just multiply by 1.61
+	# 2. by multiplying first, we gain better accuracy since there should be less bits thrown away by the dividing step. 
+	# say that we divide by 100 first then multiply by 161, it would render a lot of the cases be 0 unless the input is very large
+	# or, if we multiply by 16 instead by 161, we lose that 1% precision.
+
 	MOV r1, #161
 	MUL r0, r0, r1
 	MOV r1, #100
@@ -31,11 +36,13 @@
 	SUB sp, sp, #4
 	STR lr, [sp]
 
-	# r0 is miles, r1 is hours
+	# r0 is miles and r1 is hours
+	# move r1 to r3 to free up r1 for now
+	MOV r4, r1
 	BL miles2kilometer
-	# hours is stored in r5
+	# hours is stored in r3
 	# move it to r1 to complete the division
-	MOV r1, r5
+	MOV r1, r4
 	# now r0 has km; r0/r1
 	BL __aeabi_idiv
 
