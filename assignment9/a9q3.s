@@ -53,7 +53,8 @@
 
 		# call findMaxOf3(r1, r2, r3) 
 		BL findMaxOf3
-
+		
+		# since find Max of 3 will have return val in r1, printf directly
 		LDR r0, =output
 		BL printf
 
@@ -68,50 +69,24 @@
 		SUB sp, sp, #4
 		STR lr, [sp, #0]
 
-		# 3 numbers are stored in r1, r2, and r3
-		# Compare pairs r1r2 => store large in r4
-		# compare r3r4 => store large in r4
-		# return whatever val in r4
-		# always store the largest in r4
-		# init r4 @0
-		MOV r4, #0
-
-		# if block
-		# if r1 >= r2, BGE => MOV r4, r1
+		# compare r1 and r2
+		# if r1 <= r2: r1 = r2 else do nothing
 		CMP r1, r2
-		BGE GreaterOrEqualFirst
-		# elif r1 < r2, BLT => MOV r4, r2
-		MOV r4, r2
-		B secondCompare
+		ADDLT r1, r2, #0 //add r2+0 if r1 <r2
 
-		# r1 is greater
-		GreaterOrEqualFirst:
-			MOV r4, r1
-			B secondCompare
-		
-		secondCompare:
+		# now r1 have the greater of the 2 values in r1 and r2
 
-			# 2nd if block, r3 vs r4
-			# if r3 >= r4, BGE => MOV r5, r3
-			# store largest in r5
-			CMP r3, r4
-			BGE GreaterOrEqualSecond
-			# elif r3 < r4, BLT => MOV r5, r4
-			MOV r5, r4
-			B end
-			GreaterOrEqualSecond:
-				MOV r5, r3
-				B end
+		# compare (now) r1 and r3
+		# same logic to above
+		CMP r1, r3
+		ADDLT r1, r3, #0 // add r3+0 and assign to r1 if r1<r3
 
-		end:
-			# return in r1
-			MOV r1, r5
+		# now r1 should have the greatest of 3 numbers
 
-
-			# pop stack
-			LDR lr, [sp, #0]
-			ADD sp, sp, #4
-			MOV pc, lr
+		# pop stack
+		LDR lr, [sp, #0]
+		ADD sp, sp, #4
+		MOV pc, lr
 
 #END findMaxOf3
 

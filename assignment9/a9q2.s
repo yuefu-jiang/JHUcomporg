@@ -10,6 +10,7 @@ main:
 	BL printf
 
 	# scanf
+	# this will store first name and last name
 	LDR r0, =nameFormat
 	LDR r1, =fn
 	LDR r2, =ln
@@ -20,12 +21,12 @@ main:
 	LDR r0, =prompt2
 	BL printf
 	
-	# scanf
+	# scanf for score
 	LDR r0, =scoreInput
 	LDR r1, =score
 	BL scanf
 
-	# store score int in r4
+	# store score int in r4 for comparison
 	LDR r4, =score
 	LDR r4, [r4]
 	
@@ -35,12 +36,18 @@ main:
 		BLT invalidScore
 		CMP r4, #100
 		BGT invalidScore
-		B gradeA
 		
+		# after ruling out instances <0 or >100, goto grade A
+		B gradeA
+	
+	# block for invalid error	
+	# B end after print
 	invalidScore:		
 		LDR r0, =errorMsg
 		BL printf
 		B endif
+	
+	# print grade A, if not > 90, goto B
 	gradeA:
 		MOV r0, #90
  		CMP r4, r0
@@ -51,6 +58,8 @@ main:
 		LDR r2, =ln
 		BL printf
 		B endif
+
+	# print B, if not>80 goto C
 	gradeB:
 		MOV r0, #80
 		CMP r4, r0
@@ -62,6 +71,7 @@ main:
 		BL printf
 
 		B endif
+	# simillarly for C
 	gradeC:
 		MOV r0, #70
 		CMP r4, r0
@@ -73,6 +83,7 @@ main:
 		BL printf
 
 		B endif
+	# same for D
 	gradeD:
 		MOV r0, #60
 		CMP r4, r0
@@ -84,6 +95,7 @@ main:
 		BL printf
 
 		B endif
+	# for F, just print and exit since there's no grade lower than F
 	gradeF:
 
 		LDR r0, =msg_F
@@ -92,6 +104,7 @@ main:
 		BL printf
 
 		B endif
+	# end and pop stack
 	endif:
 		LDR lr, [sp]
 		ADD sp, sp, #4
