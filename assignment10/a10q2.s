@@ -45,6 +45,8 @@
 
 			# this loops until counter equals maximum, i.e. num/2
 		start_inner:
+			CMP r6, #3
+			BEQ isPrime // edge case where 1st comparison will not be equal since division inaccuracy
 			CMP r6, #4
 			BEQ notPrime //this is a edge case where the first comparison will equal.
 			CMP r4, r5
@@ -53,7 +55,7 @@
 			# if not prime yet, check if remainder is 0
 			MOV r0, r6
 			MOV r1, r4
-			BL remainder // implemented in lib.s
+			BL remainder // implemented remainder function below
 			CMP r0, #0
 			BEQ notPrime
 
